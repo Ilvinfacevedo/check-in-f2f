@@ -1,111 +1,106 @@
-# Check-in semanal · Protocolo F2F — Guía de configuración
+# Check-in semanal · Protocolo F2F — Guía
 
-App web estática (HTML + CSS + JS, sin instalar nada). Tus asesorados la abren desde el celular, la llenan en menos de 1 minuto y:
+Tres piezas:
 
-1. Se guarda una fila en tu Google Sheet (hoja **Checkins**).
-2. Al final les sale un botón para mandarte el resumen por WhatsApp.
+| Pieza | Dirección | Para quién |
+|---|---|---|
+| **App de check-in** | https://ilvinfacevedo.github.io/check-in-f2f/?c=Nombre | Tus asesorados |
+| **Panel del coach** | https://ilvinfacevedo.github.io/check-in-f2f/coach.html | Solo tú (con clave) |
+| **Hoja de Google** | tu hoja **F2F CHECK-INS** | Solo tú |
 
 ```
 check-in-f2f/
-├── index.html          ← la app
-├── styles.css
-├── app.js
-├── config.js           ← ÚNICO archivo que tienes que editar
-├── og-image.png        ← imagen que sale al compartir el enlace
-├── favicon.svg / apple-touch-icon.png
-└── apps-script/Code.gs ← código para Google Sheets
+├── index.html · styles.css · app.js    ← app de check-in
+├── coach.html · coach.css · coach.js   ← panel del coach
+├── config.js                           ← URL del Apps Script y tu WhatsApp
+├── apps-script/Code.gs                 ← código de la hoja
+└── og-image.png · favicon.svg · apple-touch-icon.png
 ```
 
 ---
 
-## 1. Conectar Google Sheets (10 minutos)
+## 1. Instalar la hoja (una sola vez, desde una computadora)
 
-1. Entra a [sheets.new](https://sheets.new) y ponle nombre a la hoja, por ejemplo **F2F · Check-ins**.
-2. Arriba, ve a **Extensiones → Apps Script**.
-3. Borra todo lo que aparece en `Código.gs` y **pega completo** el contenido de `apps-script/Code.gs`. Dale a 💾 Guardar.
-4. En la barra de arriba elige la función **`setup`** y dale a **▶ Ejecutar**.
-   - Google te pedirá permisos: **Revisar permisos → tu cuenta → Configuración avanzada → Ir a (proyecto) → Permitir**. Es normal: el script es tuyo.
-   - Al terminar, en tu hoja aparecerá la pestaña **Checkins** con los encabezados.
-5. Arriba a la derecha: **Implementar → Nueva implementación**.
-   - Tipo (⚙️): **Aplicación web**.
-   - Ejecutar como: **Yo**.
-   - Quién tiene acceso: **Cualquier usuario** (sin esto la app no puede guardar).
-   - **Implementar** y copia la **URL de la aplicación web** (termina en `/exec`).
-6. Abre `config.js` y pega la URL:
+> Hazlo en una **ventana de incógnito** con **solo** tu cuenta acevedoilvinf@gmail.com abierta. Si hay varias cuentas abiertas, Apps Script se confunde.
 
-   ```js
-   SCRIPT_URL: "https://script.google.com/macros/s/XXXXXXXX/exec",
-   ```
+1. Abre tu hoja **F2F CHECK-INS**.
+2. Menú **Extensiones → Apps Script**.
+3. Borra todo lo que hay en `Código.gs`, pega **completo** el archivo `apps-script/Code.gs` y dale a 💾 Guardar.
+4. Arriba elige la función **`setup`** y dale a **▶ Ejecutar**. Acepta los permisos (Configuración avanzada → Ir a… → Permitir).
+5. Vuelve a la hoja: ahora tiene 4 pestañas con diseño: **📊 Panel · 👥 Clientes · 📋 Checkins · ⚙️ Configuración**, y un menú nuevo **F2F**.
+6. En Apps Script: **Implementar → Nueva implementación → ⚙️ Aplicación web**.
+   - Ejecutar como: **Yo** · Quién tiene acceso: **Cualquier usuario**.
+   - **Implementar** y copia la URL que termina en `/exec`.
+7. Pon esa URL en `config.js` (`SCRIPT_URL`). Si me la mandas, lo hago yo.
 
-7. Prueba: abre la URL `/exec` en tu navegador. Debe decir `{"ok":true,...}`.
-
-> **Si cambias el código de `Code.gs` más adelante:** Implementar → Gestionar implementaciones → ✏️ → Versión: *Nueva versión* → Implementar. Así la URL sigue siendo la misma.
-
-**Columnas que se guardan:** Fecha · Semana · Año · Nombre · Dieta · Entreno · Sesiones · Sueño (h/noche) · Calidad sueño · Digestión · Digestión (nota) · Energía · Peso (lb) · Notas · F2F Score · ID.
-
-**¿Y si falla el internet del cliente?** La app no se rompe: guarda el check-in en el teléfono y lo vuelve a intentar sola cada vez que la abre o recupera la conexión. El ID evita filas repetidas.
+**Si más adelante actualizas `Code.gs`:** pega el nuevo código → Guardar → ejecuta `setup` → **Implementar → Gestionar implementaciones → ✏️ → Versión: Nueva versión → Implementar**. Así la URL no cambia.
 
 ---
 
-## 2. Probar en tu computadora
+## 2. Configurar (pestaña ⚙️ Configuración)
 
-Necesitas un servidor local (abrir el archivo con doble clic no sirve para todo). Desde la carpeta del proyecto:
+Solo se toca la columna B:
+
+| Ajuste | Qué poner |
+|---|---|
+| **Clave del panel del coach** | Una clave tuya (mínimo 6 caracteres). Es la que pide `coach.html`. |
+| **Correo para avisos** | Opcional. Vacío = tu Gmail. |
+| **Aviso por correo en cada check-in** | ☑️ si quieres un correo cada vez que alguien envía. |
+| **Recordatorio de los lunes** | Usa el menú **F2F → ⏰ Activar recordatorios**: cada lunes a las 9 a. m. te llega un correo con quién no ha enviado. |
+| **Enlace de la app** | Ya viene puesto. Solo cámbialo si mueves la app. |
+
+---
+
+## 3. Tu día a día
+
+**Cliente nuevo**
+1. Escríbelo en **👥 Clientes**: nombre, WhatsApp (ej.: `18091234567`), estado *Activo*.
+2. El **enlace personal** se crea solo.
+3. Toca **📲 Enviar** en su fila: se abre WhatsApp con el mensaje y el enlace ya escritos.
+
+**Cada semana**
+- Los check-ins llegan a **📋 Checkins** (con colores: rojo = bajo, verde = alto).
+- **📊 Panel** muestra a cada cliente: último check-in, si está **🟢 Al día / 🟡 Toca ya / 🔴 Atrasado**, score, promedio de 4 semanas, mini gráfica, dieta, entreno y cambio de peso.
+- Para gráficas grandes por cliente: abre **coach.html** en tu celular o computadora y escribe tu clave.
+
+**Cliente que pausa o termina:** cambia su estado a *Pausado* o *Terminado*. Deja de salir en el Panel, pero su historial se queda.
+
+**Si la hoja se ve desordenada:** menú **F2F → 🎨 Reaplicar diseño**. No borra datos.
+
+⚠️ No cambies el orden ni los nombres de las columnas de 📋 Checkins.
+
+---
+
+## 4. Panel del coach (`coach.html`)
+
+- Dirección: **https://ilvinfacevedo.github.io/check-in-f2f/coach.html**
+- Pide la clave de ⚙️ Configuración. Con "Recordarme" no la vuelve a pedir en ese dispositivo.
+- **Vista general:** cuántos enviaron esta semana, score promedio, pendientes, y la lista con el estado de cada cliente.
+- **Por cliente:** F2F Score, peso, dieta vs. entreno, sueño (con zona ideal 7–9 h), energía, cintura e historial completo con notas.
+- Para verlo con datos de ejemplo: `coach.html?demo=1`.
+- **Seguridad:** la clave se comprueba en tu Apps Script, no en la página. Sin la clave correcta no sale ningún dato.
+
+---
+
+## 5. La app de check-in
+
+Preguntas: dieta (1–10), entreno (1–10, más sesiones), sueño (horas promedio y calidad), digestión, energía (1–5), peso y cintura (opcionales) y notas. Al final muestra el **F2F Score** y el botón para mandarte el resumen por WhatsApp.
+
+- **Enlace personal:** `…/check-in-f2f/?c=Nombre` (lo genera 👥 Clientes).
+- **Sin internet:** el check-in se guarda en el teléfono y se envía solo después.
+- **Si cierra la app a mitad:** al volver sigue donde iba.
+
+**F2F Score (0–100):** dieta 35 % + entreno 30 % + sueño 20 % (horas 60 % y calidad 40 %) + energía 15 %. Se cambia en `computeScore` de `app.js`.
+
+---
+
+## 6. Probar en tu computadora
 
 ```bash
 python3 -m http.server 8000
 ```
+Abre <http://localhost:8000/?c=Prueba> y <http://localhost:8000/coach.html?demo=1>.
 
-Abre <http://localhost:8000/?c=Juan>. Para verla como celular: Chrome → clic derecho → **Inspeccionar** → icono de 📱 (Ctrl+Shift+M) → elige un iPhone o Pixel.
+## 7. Publicación
 
-Para empezar de cero: en la consola del navegador escribe `localStorage.clear()` y recarga.
-
----
-
-## 3. Publicar en GitHub Pages
-
-Este repositorio ya trae un workflow (`.github/workflows/pages.yml`) que publica la app.
-
-1. En GitHub, entra al repo **check-in-f2f → Settings → Pages**.
-2. En **Build and deployment → Source** elige **GitHub Actions**.
-3. Ve a la pestaña **Actions**, abre *Check-in semanal → GitHub Pages* y dale a **Run workflow** (solo la primera vez).
-4. En 1–2 minutos queda en:
-
-   **https://ilvinfacevedo.github.io/check-in-f2f/**
-
-Cada vez que se suba un cambio a `main`, se vuelve a publicar solo.
-
-> Si un día lo mueves a otro dominio, cambia en `index.html` las dos URLs de `og:url` y `og:image` para que la vista previa en WhatsApp siga saliendo.
-
----
-
-## 4. Enlace personal de cada cliente
-
-Agrega `?c=` y el nombre al final del enlace. Los espacios se escriben como `%20` (o `+`):
-
-| Cliente        | Enlace                                                        |
-|----------------|---------------------------------------------------------------|
-| Juan           | `https://ilvinfacevedo.github.io/check-in-f2f/?c=Juan`        |
-| María Pérez    | `https://ilvinfacevedo.github.io/check-in-f2f/?c=María%20Pérez` |
-
-Con el enlace personal, la bienvenida dice “Hola, Juan 👋” y no le pide el nombre. Sin `?c=`, la app le pregunta cómo se llama.
-
-**Tip:** usa siempre el mismo nombre para cada cliente; así en la hoja puedes filtrar su evolución semana a semana.
-
----
-
-## 5. ¿Cómo se calcula el F2F Score? (0–100)
-
-| Parte    | Peso | Cómo se mide                                                     |
-|----------|------|------------------------------------------------------------------|
-| Dieta    | 35 % | valor 1–10 × 10                                                  |
-| Entreno  | 30 % | valor 1–10 × 10                                                  |
-| Sueño    | 20 % | 60 % horas (7–9 h = 100; baja fuera de ese rango) + 40 % calidad (Mala 40 · Normal 75 · Buena 100) |
-| Energía  | 15 % | valor 1–5 × 20                                                   |
-
-Para cambiar los pesos, edita `computeScore` en `app.js`.
-
----
-
-## 6. Cambiar el WhatsApp del coach
-
-En `config.js`, `COACH_PHONE` (código de país + número, sin `+` ni espacios). Hoy: `18294493723`.
+Cada cambio que se sube a `main` se publica solo en GitHub Pages (pestaña **Actions**).

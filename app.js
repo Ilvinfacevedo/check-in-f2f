@@ -92,7 +92,7 @@
     return {
       name: "", diet: null, train: null, sessions: null,
       sleepH: null, sleepQ: null, digestion: [], digestionNote: "",
-      energy: null, weight: "", notes: "",
+      energy: null, weight: "", waist: "", notes: "",
     };
   };
   var state = blank();
@@ -290,13 +290,15 @@
         state[f] = el.value;
         if (f === "notes") $("#notesCount").textContent = el.value.length;
         if (f === "name") renderName();
-        if (f === "weight" || f === "notes") renderChrome();
+        if (f === "weight" || f === "waist" || f === "notes") renderChrome();
         saveDraft(); clearErr();
       });
     });
-    $("#weight").addEventListener("input", function (e) {
-      var el = e.target, v = el.value.replace(/[^\d.,]/g, "");
-      if (v !== el.value) { el.value = v; state.weight = v; saveDraft(); renderChrome(); }
+    ["weight", "waist"].forEach(function (id) {
+      $("#" + id).addEventListener("input", function (e) {
+        var el = e.target, v = el.value.replace(/[^\d.,]/g, "");
+        if (v !== el.value) { el.value = v; state[id] = v; saveDraft(); renderChrome(); }
+      });
     });
     $("#changeName").addEventListener("click", function () {
       urlName = "";
@@ -310,6 +312,7 @@
     $("#name").value = state.name;
     $("#digestionNote").value = state.digestionNote;
     $("#weight").value = state.weight;
+    $("#waist").value = state.waist;
     $("#notes").value = state.notes;
     $("#notesCount").textContent = state.notes.length;
   }
@@ -335,9 +338,11 @@
     4: function () { return state.digestion.length ? "" : "Marca al menos una opción (o “Sin problemas”)."; },
     5: function () { return state.energy == null ? "Elige tu nivel de energía." : ""; },
     6: function () {
-      if (!String(state.weight).trim()) return "";
       var w = parseWeight(state.weight);
-      return w == null || w < 60 || w > 600 ? "Ese peso no se ve bien. Escríbelo en libras (ej.: 152) o déjalo vacío." : "";
+      if (String(state.weight).trim() && (w == null || w < 60 || w > 600)) return "Ese peso no se ve bien. Escríbelo en libras (ej.: 152) o déjalo vacío.";
+      var c = parseWeight(state.waist);
+      if (String(state.waist).trim() && (c == null || c < 18 || c > 80)) return "La cintura va en pulgadas (ej.: 32) o déjala vacía.";
+      return "";
     },
   };
   function validate(s) {
@@ -408,7 +413,7 @@
     nav.hidden = step === DONE_STEP;
     nav.classList.toggle("is-first", step === 0);
     var nextLabel = $("#nextLabel"), nextIcon = $("#nextIcon");
-    var lab = step === 0 ? "¡Vamos!" : step === LAST_STEP ? "Enviar check-in" : (step === 6 && !String(state.weight).trim()) || (step === 7 && !state.notes.trim()) ? "Saltar" : "Siguiente";
+    var lab = step === 0 ? "¡Vamos!" : step === LAST_STEP ? "Enviar check-in" : (step === 6 && !String(state.weight).trim() && !String(state.waist).trim()) || (step === 7 && !state.notes.trim()) ? "Saltar" : "Siguiente";
     nextLabel.textContent = lab;
     nextIcon.innerHTML = step === LAST_STEP ? ICONS.send : ICONS.arrowRight;
   }
@@ -425,6 +430,7 @@
       { icon: "activity", k: "Digestión", v: state.digestion.join(", "), note: state.digestionNote.trim(), step: 4 },
       { icon: "zap", k: "Energía", v: state.energy + "/5", step: 5 },
       { icon: "scale", k: "Peso", v: w != null ? w + " lb" : "No registrado", muted: w == null, step: 6 },
+      { icon: "scale", k: "Cintura", v: parseWeight(state.waist) != null ? parseWeight(state.waist) + " pulg" : "No registrada", muted: parseWeight(state.waist) == null, step: 6 },
       { icon: "pen", k: "Nota", v: state.notes.trim() ? "Sí" : "Sin nota", muted: !state.notes.trim(), note: state.notes.trim(), step: 7 },
     ];
   }
@@ -483,6 +489,7 @@
       digestionNota: state.digestionNote.trim(),
       energia: state.energy,
       peso: w,
+      cintura: parseWeight(state.waist),
       notas: state.notes.trim(),
       score: computeScore(state),
     };
@@ -568,7 +575,7 @@
       "😴 Sueño: " + fmtHours(p.suenoHoras) + " h/noche · " + p.suenoCalidad,
       "🫃 Digestión: " + p.digestion + (p.digestionNota ? " — " + p.digestionNota : ""),
       "⚡ Energía: " + p.energia + "/5",
-      "⚖️ Peso: " + (p.peso != null ? p.peso + " lb" : "No me pesé"),
+      "⚖️ Peso: " + (p.peso != null ? p.peso + " lb" : "No me pesé") + (p.cintura != null ? " · Cintura: " + p.cintura + " pulg" : ""),
       "🔥 F2F Score: " + p.score,
     ];
     if (p.notas) lines.push("📝 Nota: " + p.notas);

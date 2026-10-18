@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es-DO">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0e0e0d" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Panel del coach · Protocolo F2F</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&family=Bebas+Neue&display=swap" />
+  <link rel="stylesheet" href="coach.css" />
+  <script src="config.js"></script>
+  <script src="coach.js" defer></script>
+</head>
+<body>
+  <div class="bg" aria-hidden="true"><div class="bg__glow"></div><div class="bg__grid"></div></div>
+
+  <!-- ACCESO -->
+  <main class="login" id="login" hidden>
+    <form class="login__card" id="loginForm" autocomplete="on">
+      <div class="brand brand--lg">
+        <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 20 L12 4 L21 20 Z" /></svg></span>
+        <span class="brand__name">PROTOCOLO <b>F2F</b></span>
+      </div>
+      <h1 class="login__title">Panel del coach</h1>
+      <p class="login__lead">La evolución de tus asesorados, semana a semana.</p>
+      <label class="label" for="key">Clave</label>
+      <input class="input" id="key" name="password" type="password" autocomplete="current-password" required minlength="6" placeholder="Tu clave del panel" />
+      <label class="check"><input type="checkbox" id="remember" checked /> Recordarme en este dispositivo</label>
+      <p class="err" id="loginErr" role="alert"></p>
+      <button class="btn btn--primary" type="submit" id="loginBtn">Entrar</button>
+      <p class="login__hint">La clave está en tu hoja de Google, pestaña <b>⚙️ Configuración</b>.</p>
+    </form>
+  </main>
+
+  <!-- PANEL -->
+  <div class="dash" id="dash" hidden>
+    <header class="bar">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 20 L12 4 L21 20 Z" /></svg></span>
+        <span class="brand__name">PROTOCOLO <b>F2F</b></span>
+        <span class="bar__tag">Coach</span>
+      </div>
+      <div class="bar__actions">
+        <span class="bar__updated" id="updated"></span>
+        <button class="btn btn--ghost btn--sm" id="refreshBtn" type="button" aria-label="Actualizar datos"><i data-icon="refresh"></i><span>Actualizar</span></button>
+        <button class="btn btn--ghost btn--sm" id="logoutBtn" type="button" aria-label="Salir"><i data-icon="logout"></i><span>Salir</span></button>
+      </div>
+    </header>
+
+    <!-- Vista general -->
+    <section class="view" id="viewAll">
+      <div class="view__head">
+        <div>
+          <p class="eyebrow">Semana <span id="weekNow"></span></p>
+          <h1 class="h1">Tus asesorados</h1>
+        </div>
+      </div>
+      <div class="kpis" id="kpisAll"></div>
+      <div class="card">
+        <div class="card__head">
+          <h2 class="h2">Estado de la semana</h2>
+          <div class="seg-filter" role="tablist" aria-label="Filtrar clientes" id="filter">
+            <button type="button" role="tab" aria-selected="true" data-f="activos">Activos</button>
+            <button type="button" role="tab" aria-selected="false" data-f="pendientes">Pendientes</button>
+            <button type="button" role="tab" aria-selected="false" data-f="todos">Todos</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="table" id="clientsTable">
+            <thead>
+              <tr><th>Cliente</th><th>Estado</th><th class="hide-xs">Último check-in</th><th class="num">Score</th><th class="hide-sm">Evolución</th><th class="num hide-sm">Peso</th><th class="num hide-sm">Cambio</th><th aria-label="Abrir"></th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="empty" id="emptyAll" hidden>Todavía no hay check-ins. Cuando tus asesorados envíen el primero, aparecerán aquí.</p>
+      </div>
+    </section>
+
+    <!-- Detalle de cliente -->
+    <section class="view" id="viewClient" hidden>
+      <div class="view__head">
+        <div>
+          <button class="back" id="backBtn" type="button"><i data-icon="arrowLeft"></i> Todos los clientes</button>
+          <h1 class="h1" id="cName"></h1>
+          <p class="sub" id="cMeta"></p>
+        </div>
+        <label class="pick">
+          <span class="sr-only">Cambiar de cliente</span>
+          <select id="clientPick"></select>
+        </label>
+      </div>
+      <div class="kpis" id="kpisClient"></div>
+      <div class="charts">
+        <article class="card chart-card chart-card--wide"><h2 class="h2">F2F Score</h2><p class="chart-sub">0 a 100 · combina dieta, entreno, sueño y energía</p><div class="chart" id="chScore"></div></article>
+        <article class="card chart-card"><h2 class="h2">Peso</h2><p class="chart-sub">Libras en ayunas</p><div class="chart" id="chWeight"></div></article>
+        <article class="card chart-card"><h2 class="h2">Dieta y entreno</h2><p class="chart-sub">Adherencia del 1 al 10</p><div class="legend" id="lgAdh"></div><div class="chart" id="chAdh"></div></article>
+        <article class="card chart-card"><h2 class="h2">Sueño</h2><p class="chart-sub">Horas por noche · zona ideal 7–9 h</p><div class="chart" id="chSleep"></div></article>
+        <article class="card chart-card"><h2 class="h2">Energía</h2><p class="chart-sub">Del 1 al 5</p><div class="chart" id="chEnergy"></div></article>
+      </div>
+      <div class="card">
+        <div class="card__head"><h2 class="h2">Historial</h2><span class="muted" id="histCount"></span></div>
+        <div class="table-wrap">
+          <table class="table table--hist" id="histTable">
+            <thead><tr><th>Semana</th><th class="num">Score</th><th class="num">Dieta</th><th class="num">Entreno</th><th class="num">Sueño</th><th class="num">Energía</th><th class="num">Peso</th><th>Digestión</th><th>Notas</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="tip" id="tip" role="tooltip" hidden></div>
+  <div class="loading" id="loading" hidden><span class="spinner" aria-hidden="true"></span> Cargando datos…</div>
+</body>
+</html>
