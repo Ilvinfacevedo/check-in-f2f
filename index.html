@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="es-DO">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0e0e0d" />
+  <title>Check-in semanal · Protocolo F2F</title>
+  <meta name="description" content="Tu check-in de la semana en menos de 1 minuto: dieta, entreno, sueño, energía y peso. Protocolo F2F." />
+
+  <!-- Vista previa al compartir (WhatsApp, Instagram, Facebook). Si cambias de dominio, actualiza las URLs absolutas. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Protocolo F2F" />
+  <meta property="og:title" content="Check-in semanal · Protocolo F2F" />
+  <meta property="og:description" content="¡Vamos con tu semana! Llénalo en menos de 1 minuto." />
+  <meta property="og:url" content="https://ilvinfacevedo.github.io/check-in-f2f/" />
+  <meta property="og:image" content="https://ilvinfacevedo.github.io/check-in-f2f/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Protocolo F2F · Check-in semanal" />
+  <meta property="og:locale" content="es_DO" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&family=Bebas+Neue&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <script src="config.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <!-- Fondo: glow rojo + rejilla + grano (todo CSS/SVG, sin imágenes) -->
+  <div class="bg" aria-hidden="true">
+    <div class="bg__glow"></div>
+    <div class="bg__grid"></div>
+    <svg class="bg__chevrons" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="chev" width="56" height="56" patternUnits="userSpaceOnUse" patternTransform="rotate(-18)">
+          <path d="M0 28 L14 14 L28 28 L42 14 L56 28" fill="none" stroke="currentColor" stroke-width="1" />
+        </pattern>
+      </defs>
+      <rect width="400" height="400" fill="url(#chev)" />
+    </svg>
+  </div>
+
+  <div class="app" id="app">
+    <header class="top">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 20 L12 4 L21 20 Z" /></svg></span>
+        <span class="brand__name">PROTOCOLO <b>F2F</b></span>
+      </div>
+      <div class="top__step" id="stepLabel" aria-live="polite"></div>
+    </header>
+
+    <div class="progress" role="progressbar" aria-label="Progreso del check-in" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress">
+      <span class="progress__bar" id="progressBar"></span>
+    </div>
+
+    <main class="stage" id="stage">
+
+      <!-- 0 · BIENVENIDA -->
+      <section class="screen" data-step="0" aria-labelledby="t0">
+        <div class="ghost" aria-hidden="true">F2F</div>
+        <p class="eyebrow"><span class="dot"></span> Check-in semanal · <span id="weekTag"></span></p>
+        <h1 class="title title--xl" id="t0">
+          <span id="helloLine">Hola<span class="js-name-wrap"></span> <span class="wave" aria-hidden="true">👋</span></span>
+          <span class="title__accent">Vamos con tu <span class="nowrap">check-in</span> de la semana</span>
+        </h1>
+        <p class="lead">6 preguntas rápidas. Menos de 1 minuto. Con esto ajusto tu protocolo para que sigas avanzando.</p>
+
+        <div class="field" id="nameField">
+          <label class="label" for="name">¿Cómo te llamas?</label>
+          <input class="input" id="name" name="name" type="text" autocomplete="given-name" placeholder="Tu nombre" maxlength="40" data-field="name" />
+        </div>
+        <p class="not-you" id="notYou" hidden>¿No eres <span class="js-name"></span>? <button type="button" class="link" id="changeName">Cambiar nombre</button></p>
+
+        <ul class="pills" aria-label="Lo que vamos a revisar">
+          <li>Dieta</li><li>Entreno</li><li>Sueño</li><li>Digestión</li><li>Energía</li><li>Peso</li>
+        </ul>
+        <p class="err" role="alert"></p>
+      </section>
+
+      <!-- 1 · DIETA -->
+      <section class="screen" data-step="1" aria-labelledby="t1">
+        <div class="ghost" aria-hidden="true">01</div>
+        <p class="eyebrow"><i data-icon="utensils"></i> Nutrición</p>
+        <h2 class="title" id="t1">¿Qué tan bien seguiste tu dieta esta semana?</h2>
+        <div class="rating is-untouched" data-rating="diet">
+          <div class="rating__display" aria-hidden="true">
+            <span class="rating__num">–</span><span class="rating__of">/10</span>
+          </div>
+          <p class="rating__verdict" aria-live="polite">Desliza o toca un número</p>
+          <input class="range" type="range" min="1" max="10" step="1" value="5" id="diet" data-field="diet" aria-label="Adherencia a la dieta del 1 al 10" />
+          <div class="ticks" role="group" aria-label="Elegir valor de dieta">
+            <!-- se generan desde app.js -->
+          </div>
+          <div class="ticks__ends" aria-hidden="true"><span>Me salí del plan</span><span>Al 100%</span></div>
+        </div>
+        <p class="err" role="alert"></p>
+      </section>
+
+      <!-- 2 · ENTRENO -->
+      <section class="screen" data-step="2" aria-labelledby="t2">
+        <div class="ghost" aria-hidden="true">02</div>
+        <p class="eyebrow"><i data-icon="dumbbell"></i> Entrenamiento</p>
+        <h2 class="title" id="t2">¿Qué tan bien cumpliste con tus entrenos?</h2>
+        <div class="rating is-untouched" data-rating="train">
+          <div class="rating__display" aria-hidden="true">
+            <span class="rating__num">–</span><span class="rating__of">/10</span>
+          </div>
+          <p class="rating__verdict" aria-live="polite">Desliza o toca un número</p>
+          <input class="range" type="range" min="1" max="10" step="1" value="5" id="train" data-field="train" aria-label="Adherencia al entrenamiento del 1 al 10" />
+          <div class="ticks" role="group" aria-label="Elegir valor de entreno"></div>
+          <div class="ticks__ends" aria-hidden="true"><span>Casi no fui</span><span>No fallé ni uno</span></div>
+        </div>
+
+        <fieldset class="group">
+          <legend class="label">¿Cuántos entrenos completaste? <span class="opt">Opcional</span></legend>
+          <div class="seg seg--8" data-single="sessions">
+            <button type="button" class="seg__btn" data-value="0">0</button>
+            <button type="button" class="seg__btn" data-value="1">1</button>
+            <button type="button" class="seg__btn" data-value="2">2</button>
+            <button type="button" class="seg__btn" data-value="3">3</button>
+            <button type="button" class="seg__btn" data-value="4">4</button>
+            <button type="button" class="seg__btn" data-value="5">5</button>
+            <button type="button" class="seg__btn" data-value="6">6</button>
+            <button type="button" class="seg__btn" data-value="7">7</button>
+          </div>
+        </fieldset>
+        <p class="err" role="alert"></p>
+      </section>
+
+      <!-- 3 · SUEÑO -->
+      <section class="screen" data-step="3" aria-labelledby="t3">
+        <div class="ghost" aria-hidden="true">03</div>
+        <p class="eyebrow"><i data-icon="moon"></i> Descanso</p>
+        <h2 class="title" id="t3">¿Cuántas horas dormiste por noche, en promedio?</h2>
+        <div class="sleep is-untouched" id="sleepBox">
+          <div class="rating__display" aria-hidden="true">
+            <span class="rating__num" id="sleepNum">–</span><span class="rating__of">h / noche</span>
+          </div>
+          <p class="rating__verdict" id="sleepVerdict" aria-live="polite">Desliza para elegir</p>
+          <input class="range" type="range" min="4" max="10" step="0.5" value="7" id="sleepH" data-field="sleepH" aria-label="Promedio de horas de sueño por noche, de 4 a 10" />
+          <div class="ticks__ends" aria-hidden="true"><span>4 h</span><span>7 h</span><span>10 h</span></div>
+        </div>
+
+        <fieldset class="group">
+          <legend class="label">¿Y la calidad del sueño?</legend>
+          <div class="seg seg--3 seg--tall" data-single="sleepQ">
+            <button type="button" class="seg__btn" data-value="Mala"><i data-icon="frown"></i><span>Mala</span></button>
+            <button type="button" class="seg__btn" data-value="Normal"><i data-icon="meh"></i><span>Normal</span></button>
+            <button type="button" class="seg__btn" data-value="Buena"><i data-icon="smile"></i><span>Buena</span></button>
+          </div>
+        </fieldset>
+        <p class="err" role="alert"></p>
+      </section>
+
+      <!-- 4 · DIGESTIÓN -->
+      <section class="screen" data-step="4" aria-labelledby="t4">
+        <div class="ghost" aria-hidden="true">04</div>
+        <p class="eyebrow"><i data-icon="activity"></i> Digestión y apetito</p>
+        <h2 class="title" id="t4">¿Cómo estuvo tu digestión y tu apetito?</h2>
+        <p class="hint">Marca todo lo que aplique.</p>
+        <div class="chips" data-multi="digestion" role="group" aria-labelledby="t4">
+          <button type="button" class="chip chip--ok" data-value="Sin problemas" aria-pressed="false">Sin problemas</button>
+          <button type="button" class="chip" data-value="Hinchazón" aria-pressed="false">Hinchazón</button>
+          <button type="button" class="chip" data-value="Gases" aria-pressed="false">Gases</button>
+          <button type="button" class="chip" data-value="Acidez" aria-pressed="false">Acidez</button>
+          <button type="button" class="chip" data-value="Estreñimiento" aria-pressed="false">Estreñimiento</button>
+          <button type="button" class="chip" data-value="Poco apetito" aria-pressed="false">Poco apetito</button>
+          <button type="button" class="chip" data-value="Mucha hambre" aria-pressed="false">Mucha hambre</button>
+          <button type="button" class="chip" data-value="Antojos" aria-pressed="false">Antojos</button>
+        </div>
+        <div class="field reveal" id="digestionMore" hidden>
+          <label class="label" for="digestionNote">Cuéntame más <span class="opt">Opcional</span></label>
+          <input class="input" id="digestionNote" type="text" maxlength="140" placeholder="Ej.: antojos de dulce en la noche" data-field="digestionNote" />
+        </div>
+        <p class="err" role="alert"></p>
+      </section>
+
+      <!-- 5 · ENERGÍA -->
+      <section class="screen" data-step="5" aria-labelledby="t5">
+        <div class="ghost" aria-hidden="true">05</div>
+        <p class="eyebrow"><i data-icon="zap"></i> Energía</p>
+        <h2 class="title" id="t5">¿Cómo estuvo tu nivel de energía?</h2>
+        <div class="energy" data-single="energy" role="radiogroup" aria-labelledby="t5">
+          <button type="button" class="energy__btn" data-value="1" role="radio" aria-checked="false"><span class="energy__emo" aria-hidden="true">🪫</span><span class="energy__n">1</span><span class="energy__txt">Sin batería</span></button>
+          <button type="button" class="energy__btn" data-value="2" role="radio" aria-checked="false"><span class="energy__emo" aria-hidden="true">😮‍💨</span><span class="energy__n">2</span><span class="energy__txt">Bajito</span></button>
+          <button type="button" class="energy__btn" data-value="3" role="radio" aria-checked="false"><span class="energy__emo" aria-hidden="true">😐</span><span class="energy__n">3</span><span class="energy__txt">Normal</span></button>
+          <button type="button" class="energy__btn" data-value="4" role="radio" aria-checked="false"><span class="energy__emo" aria-hidden="true">💪</span><span class="energy__n">4</span><span class="energy__txt">Con pila</span></button>
+          <button type="button" class="energy__btn" data-value="5" role="radio" aria-checked="false"><span class="energy__emo" aria-hidden="true">⚡</span><span class="energy__n">5</span><span class="energy__txt">A tope</span></button>
+        </div>
+        <p class="err" role="alert"></p>
+      </section>
+
+      <!-- 6 · PESO -->
+      <section class="screen" data-step="6" aria-labelledby="t6">
+        <div class="ghost" aria-hidden="true">06</div>
+        <p class="eyebrow"><i data-icon="scale"></i> Peso <span class="opt">Opcional</span></p>
+        <h2 class="title" id="t6">¿Cuánto pesaste en ayunas?</h2>
+        <p class="hint">Solo si te pesaste esta semana. Si no, dale a “Siguiente”.</p>
+        <div class="weight">
+          <label class="sr-only" for="weight">Peso en ayunas en libras</label>
+          <input class="weight__input" id="weight" type="text" inputmode="decimal" autocomplete="off" placeholder="000" maxlength="6" data-field="weight" />
+          <span class="weight__unit">lb</span>
+        </div>
+        <p class="hint hint--small">Mismo momento siempre: al levantarte, después del baño y antes de comer.</p>
+        <p class="err" role="alert"></p>
+      </section>
+
+      <!-- 7 · NOTAS -->
+      <section class="screen" data-step="7" aria-labelledby="t7">
+        <div class="ghost" aria-hidden="true">07</div>
+        <p class="eyebrow"><i data-icon="pen"></i> Notas <span class="opt">Opcional</span></p>
+        <h2 class="title" id="t7">¿Algo que quieras que sepa?</h2>
+        <label class="sr-only" for="notes">Notas para tu coach</label>
+        <textarea class="textarea" id="notes" rows="6" maxlength="600" placeholder="Dolor, viaje, logros, dudas…" data-field="notes"></textarea>
+        <p class="counter" aria-hidden="true"><span id="notesCount">0</span>/600</p>
+        <p class="err" role="alert"></p>
+      </section>
+
+      <!-- 8 · RESUMEN -->
+      <section class="screen" data-step="8" aria-labelledby="t8">
+        <p class="eyebrow"><i data-icon="flame"></i> Resumen de tu semana</p>
+        <h2 class="title sr-only" id="t8">Resumen y F2F Score</h2>
+        <div class="score">
+          <svg class="score__ring" viewBox="0 0 200 200" aria-hidden="true">
+            <defs>
+              <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#ff6a4d" />
+                <stop offset="1" stop-color="#e13a2e" />
+              </linearGradient>
+            </defs>
+            <circle class="score__track" cx="100" cy="100" r="86" />
+            <circle class="score__ticks" cx="100" cy="100" r="74" />
+            <circle class="score__fill" id="ringFill" cx="100" cy="100" r="86" />
+          </svg>
+          <div class="score__center">
+            <span class="score__num" id="scoreNum">0</span>
+            <span class="score__label">F2F Score</span>
+          </div>
+        </div>
+        <p class="score__verdict" id="scoreVerdict"></p>
+        <dl class="summary" id="summary"></dl>
+        <p class="err" role="alert"></p>
+      </section>
+
+      <!-- 9 · LISTO -->
+      <section class="screen screen--done" data-step="9" aria-labelledby="t9">
+        <div class="done__check" aria-hidden="true">
+          <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" /><path d="M38 62 L54 77 L84 45" /></svg>
+        </div>
+        <h2 class="title title--xl" id="t9">¡<span class="nowrap">Check-in</span> enviado!</h2>
+        <p class="lead" id="doneLead">Buen trabajo esta semana.</p>
+        <p class="sync" id="syncStatus" aria-live="polite"></p>
+        <div class="done__score"><span>F2F Score</span><b id="doneScore">0</b></div>
+        <a class="btn btn--primary btn--xl" id="waBtn" href="#" target="_blank" rel="noopener">
+          <i data-icon="message"></i> Enviar resumen a mi coach por WhatsApp
+        </a>
+        <button type="button" class="btn btn--ghost" id="restartBtn"><i data-icon="rotate"></i> Volver al inicio</button>
+      </section>
+    </main>
+
+    <footer class="nav" id="nav">
+      <button type="button" class="btn btn--icon" id="backBtn" aria-label="Pregunta anterior"><i data-icon="arrowLeft"></i></button>
+      <button type="button" class="btn btn--primary btn--next" id="nextBtn"><span id="nextLabel">Siguiente</span> <i data-icon="arrowRight" id="nextIcon"></i></button>
+    </footer>
+  </div>
+
+  <canvas id="confetti" aria-hidden="true"></canvas>
+  <noscript><p class="noscript">Activa JavaScript para llenar tu check-in.</p></noscript>
+</body>
+</html>
