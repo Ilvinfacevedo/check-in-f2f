@@ -6,7 +6,7 @@ Tres piezas:
 |---|---|---|
 | **App de check-in** | https://ilvinfacevedo.github.io/check-in-f2f/?c=Nombre | Tus asesorados |
 | **Panel del coach** | https://ilvinfacevedo.github.io/check-in-f2f/coach.html | Solo tú (con clave) |
-| **Hoja de Google** | tu hoja **F2F CHECK-INS** | Solo tú |
+| **Hoja de Google** | **Protocolo F2F · Check-ins** (en tu Google Drive) | Solo tú |
 
 ```
 check-in-f2f/
@@ -23,15 +23,15 @@ check-in-f2f/
 
 > Hazlo en una **ventana de incógnito** con **solo** tu cuenta acevedoilvinf@gmail.com abierta. Si hay varias cuentas abiertas, Apps Script se confunde.
 
-1. Abre tu hoja **F2F CHECK-INS**.
+1. Abre la hoja **Protocolo F2F · Check-ins**. Ya viene con sus 4 pestañas y el diseño: **📊 Panel · 👥 Clientes · 📋 Checkins · ⚙️ Configuración**.
+   (Si algún día empiezas con una hoja vacía, después del paso 3 ejecuta la función **`setup`** con ▶ y crea todo esto sola.)
 2. Menú **Extensiones → Apps Script**.
 3. Borra todo lo que hay en `Código.gs`, pega **completo** el archivo `apps-script/Code.gs` y dale a 💾 Guardar.
-4. Arriba elige la función **`setup`** y dale a **▶ Ejecutar**. Acepta los permisos (Configuración avanzada → Ir a… → Permitir).
-5. Vuelve a la hoja: ahora tiene 4 pestañas con diseño: **📊 Panel · 👥 Clientes · 📋 Checkins · ⚙️ Configuración**, y un menú nuevo **F2F**.
-6. En Apps Script: **Implementar → Nueva implementación → ⚙️ Aplicación web**.
+4. En Apps Script: **Implementar → Nueva implementación → ⚙️ Aplicación web**.
    - Ejecutar como: **Yo** · Quién tiene acceso: **Cualquier usuario**.
-   - **Implementar** y copia la URL que termina en `/exec`.
-7. Pon esa URL en `config.js` (`SCRIPT_URL`). Si me la mandas, lo hago yo.
+   - **Implementar**. Google te pide permisos: **Revisar permisos → tu cuenta → Configuración avanzada → Ir a… → Permitir**.
+   - Copia la URL que termina en `/exec`.
+5. Pon esa URL en `config.js` (`SCRIPT_URL`). Si me la mandas, lo hago yo.
 
 **Si más adelante actualizas `Code.gs`:** pega el nuevo código → Guardar → ejecuta `setup` → **Implementar → Gestionar implementaciones → ✏️ → Versión: Nueva versión → Implementar**. Así la URL no cambia.
 

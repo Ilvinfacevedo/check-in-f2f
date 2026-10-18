@@ -111,7 +111,7 @@ function setup() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   if (!ss) throw new Error('Este script debe crearse DESDE tu hoja: Extensiones → Apps Script.');
   ss.setSpreadsheetTimeZone(TZ);
-  ss.setSpreadsheetLocale('es_419');
+  ss.setSpreadsheetLocale('es_MX');
   ss.setRecalculationInterval(SpreadsheetApp.RecalculationInterval.HOUR); // "Días" siempre al día
   migrarNombresViejos_(ss);
   ensureConfig_();
@@ -299,7 +299,7 @@ function construirPanel_() {
   sh.getRange(3, 1, 1, n).setValues([heads]);
   header_(sh.getRange(3, 1, 1, n));
   sh.setRowHeight(3, 36);
-  sh.setFrozenRows(3); sh.setFrozenColumns(1);
+  sh.setFrozenRows(3);
   [170, 130, 56, 130, 86, 96, 190, 86, 96, 92, 112, 80].forEach(function (w, i) { sh.setColumnWidth(i + 1, w); });
 
   var CK = "'" + S.checkins + "'!";
